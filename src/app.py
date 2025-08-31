@@ -101,8 +101,10 @@ def signup_for_activity(activity_name: str, email: str):
     # Get the specific activity
     activity = activities[activity_name]
 
-    # Add student email if not already signed up
+    # Add student email if not already signed up and activity is not full
     if email not in activity["participants"]:
+        if len(activity["participants"]) >= activity["max_participants"]:
+            raise HTTPException(status_code=400, detail="Activity has reached maximum capacity")
         activity["participants"].append(email)
         return {"message": f"Signed up {email} for {activity_name}"}
     return {"message": f"{email} is already signed up for {activity_name}"}
